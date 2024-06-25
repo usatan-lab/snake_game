@@ -1,6 +1,7 @@
 import pygame
 import time
 import random
+import pygame.mixer
 
 pygame.init()
 
@@ -10,8 +11,8 @@ yellow = (255, 255, 115)
 black = (0, 0, 0)
 red = (213, 50, 80)
 green = (0, 255, 0)
-blue = (50, 153, 215)
-wall_color = (250, 5, 5)  # 赤
+blue = (50, 155, 215)
+wall_color = (230, 80, 56)
 
 # 画面の大きさ
 dis_width = 800
@@ -31,6 +32,9 @@ clock = pygame.time.Clock()
 
 font_style = pygame.font.SysFont(None, 45)
 score_font = pygame.font.SysFont(None, 35)
+
+eat_sound = pygame.mixer.Sound("eat_sound.wav")
+game_over_sound = pygame.mixer.Sound("snake_game_over.wav")
 
 def draw_walls():
     pygame.draw.rect(dis, wall_color, [0, 0, dis_width, snake_block])  # 上の壁
@@ -79,6 +83,8 @@ def gameLoop():
             message("You Lost! Press Q-Quit or C-Play Again", red)
             pygame.display.update()
 
+            game_over_sound.play()
+
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_q:
@@ -91,18 +97,19 @@ def gameLoop():
             if event.type == pygame.QUIT:
                 game_over = True
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LEFT:
-                    x1_change = -snake_block
-                    y1_change = 0
-                elif event.key == pygame.K_RIGHT:
-                    x1_change = snake_block
-                    y1_change = 0
-                elif event.key == pygame.K_UP:
-                    y1_change = -snake_block
-                    x1_change = 0
-                elif event.key == pygame.K_DOWN:
-                    y1_change = snake_block
-                    x1_change = 0
+                if event.key == pygame.K_LEFT and x1_change != snake_block:
+                            x1_change = -snake_block
+                            y1_change = 0
+                elif event.key == pygame.K_RIGHT and x1_change != -snake_block:
+                            x1_change = snake_block
+                            y1_change = 0
+                elif event.key == pygame.K_UP and y1_change != snake_block:
+                            y1_change = -snake_block
+                            x1_change = 0
+                elif event.key == pygame.K_DOWN and y1_change != -snake_block:
+                            y1_change = snake_block
+                            x1_change = 0
+
 
         if (x1 >= dis_width - wall_thickness - snake_block or x1 < wall_thickness or
                 y1 >= dis_height - wall_thickness - snake_block or y1 < wall_thickness):
@@ -133,6 +140,17 @@ def gameLoop():
             Length_of_snake += 1
             score += 10
             snake_speed += 1
+            eat_sound.play()
+
+        next_x1 = x1 + x1_change
+        next_y1 = y1 + y1_change
+
+        for brock in snake_List[:-1]:
+            if brock == [next_x1,next_y1]:
+                if next_x1 == snake_List[-1][0] and next_y1 == snake_List[-1][1]:
+                    continue
+                else:
+                    game_close = True
 
         clock.tick(snake_speed)
 
