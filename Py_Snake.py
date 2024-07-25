@@ -4,7 +4,7 @@ import pygame.mixer
 
 pygame.init()
 
-# 色の定義
+# color
 white = (255, 255, 255)
 yellow = (255, 255, 115)
 black = (0, 0, 0)
@@ -13,17 +13,17 @@ green = (0, 255, 0)
 blue = (50, 155, 215)
 wall_color = (230, 80, 56)
 
-# 画面の大きさ
+# display size
 dis_width = 800
 dis_height = 600
 
-# 蛇のサイズ
+# snake size
 snake_block = 10
 initial_speed = 8
 
 wall_thickness = 10
 
-# 画面の設定
+# display setting
 dis = pygame.display.set_mode((dis_width, dis_height))
 pygame.display.set_caption('Snake Game by usatan')
 
